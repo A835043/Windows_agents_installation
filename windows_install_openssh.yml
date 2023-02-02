@@ -1,5 +1,0 @@
----
- - hosts: all
-   name: Playbook to Install OpenSSH in Windows
-   roles:
-   - windows_install_openssh
