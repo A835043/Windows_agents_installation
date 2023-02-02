@@ -1,0 +1,22 @@
+---
+# tasks file for role_verify_running_msi_windows
+- name: Verify running msi
+  win_shell: |
+    $a = get-process -name *msi*
+    $a.count
+  register: lines_count
+  retries: 30
+  delay: 60
+  until: lines_count.stdout|int <= 1
+  ignore_errors: true
+
+- name: Setting fact
+  set_fact:
+    msi_running: "false"
+  when: lines_count.stdout|int <= 1
+
+
+- name: Setting fact
+  set_fact:
+    msi_running: "true"
+  when: lines_count.stdout|int >= 2
