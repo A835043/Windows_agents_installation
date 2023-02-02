@@ -1,0 +1,63 @@
+---
+
+- name: Check if the directory exists
+  win_stat:
+   path: "{{openssh_dest_path}}"
+  register: dest_file
+
+- name: Create Directory if not exist for OpenSSH
+  win_file:
+   path: "{{openssh_dest_path}}"
+   state: directory
+  when: dest_file.stat.exists == False
+
+- name: Copy the OpenSSH
+  win_copy:
+   src: "{{ openssh_source_path }}"
+   dest: "{{ openssh_zip_path }}"
+
+- name: Check if the OpenSSH unzipped directory exists
+  win_stat:
+   path: "{{openssh_path}}"
+  register: openssh_file
+  
+- name: Unzip the binary
+  win_unzip:
+    src: "{{ openssh_zip_path }}"
+    dest: "{{openssh_dest_path }}"
+  when: openssh_file.stat.exists == False
+
+- name: Install the OpenSSH SSHD and ssh-agent services
+  win_shell: powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
+  ignore_errors: yes
+  args:
+   chdir: "{{openssh_path}}"
+
+- name: Generate server keys and allow a public key authentication
+  win_shell: .\ssh-keygen.exe -A | powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
+  ignore_errors: yes
+  args:
+   chdir: "{{openssh_path}}"  
+  become: yes
+  become_method: runas
+  become_user: SYSTEM
+   
+ 
+- name: Start the sshd and ssh-agent service
+  win_service:
+    name: "{{ item }}"
+    start_mode: auto
+    state: started
+  with_items:
+  - sshd
+  - ssh-agent
+
+- name: Open port 22 for SSH servers in Windows Firewall
+  win_firewall_rule:
+    name: SSH
+    localport: 22
+    action: allow
+    direction: in
+    protocol: tcp
+    state: present
+    enabled: yes
