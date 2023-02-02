@@ -1,4 +1,0 @@
----
-# vars file for install-rscd
-binary_vc: /var/data/win-binary/vc_redist.x64.exe
-binary_rscd: /var/data/win-binary/RSCD89-SP3-P1-WIN64.msi
