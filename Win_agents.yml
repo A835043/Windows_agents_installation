@@ -1,0 +1,8 @@
+---
+
+- name: Windows agents installation
+  hosts: all
+  become: yes
+  roles:
+    - Windows_agents_installation
+
