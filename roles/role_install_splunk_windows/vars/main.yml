@@ -1,0 +1,6 @@
+splunk_package_path_from_nexus_windows: "splunk/splunk2016/windows/endpoint-install/6.6.2"
+splunk_file_name_windows: "splunkInstall.msi"
+splunk_temp_folder_windows: "C:\\Temp\\serverBuildCodex\\Splunk"
+splunk_deployment_server_windows: "supportds.isocb.uk"
+splunk_error_msg: " "
+nexus_server_url: "https://nexus-rel.release.core.bbc.co.uk/repository/bbc-ansible-automation"
