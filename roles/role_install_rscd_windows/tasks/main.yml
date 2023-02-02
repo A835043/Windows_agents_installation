@@ -1,0 +1,53 @@
+---
+# tasks file for install-rscd
+- name: Create agent directory
+  win_file:
+    path: C:\agent
+    state: directory
+
+- name: Before installing RSCD, lets copy the binary
+  win_copy:
+    src: "vc_redist.x64.exe"
+    dest: C:\agent\vc_redist.x64.exe
+- name: Copy another binary
+  win_copy:
+    src: "RSCD89-SP3-P1-WIN64.msi"
+    dest: C:\agent\RSCD89-SP3-P1-WIN64.msi
+
+#- name: Let's execute the binary for VC++, ignore ERRORS
+#  win_command: 'C:\agent\vc_redist.x64.exe /install /passive /norestart'
+#  ignore_errors: yes
+- name: Let's execute the binary for VC++, ignore ERRORS
+  win_package:
+    path: C:\agent\vc_redist.x64.exe
+    product_id: '{CF2BEA3C-26EA-32F8-AA9B-331F7E34BA65}'
+    arguments:
+    - /install
+    - /passive
+    - /norestart
+  ignore_errors: yes
+  register: vc_result
+  retries: "2"
+  until: "vc_result is succeeded"
+  
+
+#- name: Executing binary for RSCD
+#  win_msi:
+#    path: C:\agent\RSCD89-SP3-P1-WIN64.msi
+#    extra_args: "/qn ALLUSERS=1 REBOOT=ReallySuppress"
+#  register: result
+
+- name: Installng RSCD
+  win_package:
+    path: C:\agent\RSCD89-SP3-P1-WIN64.msi
+    product_id: '{CF2BEA3C-26EA-32F8-AA9B-331F7E34BA95}'
+    arguments: '/qn ALLUSERS=1 REBOOT=ReallySuppress'
+  register: result
+  retries: "2"
+  until: "result is succeeded"
+  
+- name: Adding entry to users.local
+  win_lineinfile:
+    path: C:\Windows\rsc\users.local
+    line: 'Huntsman_L3AdminW:*  rw,map=Administrator'
+    insertafter: EOF  
