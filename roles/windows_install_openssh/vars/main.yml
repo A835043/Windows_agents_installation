@@ -1,0 +1,4 @@
+openssh_source_path: '/opt/svayam_product/prod/binaries/Windows/openssh/8.1.0/OpenSSH-Win64.zip'
+openssh_dest_path: 'C:\OpenSSH'
+openssh_zip_path: 'C:\OpenSSH\OpenSSH-Win64.zip'
+openssh_path: 'C:\OpenSSH\OpenSSH-Win64'
