@@ -1,0 +1,5 @@
+---
+ - hosts: all
+   name: Playbook to Install RSCD agent in Windows
+   roles:
+   - role_install_rscd_windows 
